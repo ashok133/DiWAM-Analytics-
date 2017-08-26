@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<title>Google Maps with Multiple Markers by CodexWorld</title>
+<style type="text/css">
+#mapContainer {
+    height: 650px;
+}
+
+#mapCanvas {
+    width: 100%;
+    height: 100%;
+}
+</style>
+
+</head>
+<body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWZ2IDESUpL3pF9dx73FO_vOy3JF7a2AY"></script>
+<script>
+function initMap() {
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    var mapOptions = {
+        mapTypeId: 'roadmap'
+    };
+                    
+    // Display a map on the web page
+    map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+    map.setTilt(50);
+        
+    // Multiple markers location, latitude, and longitude
+    var safe_markers = [['CAUVERY AT METTUR', 11.7862533, 77.8007853], ['CAUVERY AT MUSIRI', 10.9548837, 78.44393199999999], ['CAUVERY AT PETTAIVAITHALAI, TRICHY', 10.901053, 78.4894015], ['CAUVERY AT TIRUCHIRAPPALLI U/S', 10.8323794, 78.68146429999999], ['CAUVERY AT MAYILADUTHURAI, NAGAPATTINAM', 11.1018399, 79.65222179999999], ['CAUVERY AT KUMBAKONAM, THANJAVUR', 10.9616945, 79.38811319999999], ['TAMBIRAPARANI AT PAPPANKULAM', 8.7791961, 77.4250145], ['TAMBIRAPARANI AT KALLIDAI KURICHI, TIRUNELVELI', 8.6967761, 77.7215153]];
+
+    var unsafe_markers = [
+        ['CAUVERY AT PALLIPPALAYAM', 11.3749976, 77.7509303], ['CAUVERY AT TRICHY,GRAND ANAICUT', 10.832101300000001, 78.81767629999999], ['CAUVERY AT KOMARAPALAYAM, NAMAKA', 11.446664199999999, 77.6943353], ['TAMBIRAPARANI AT TIRUNELVELI,COLLECTORATE', 8.715188000000001, 77.370822], ['TAMBIRAPARANI AT ERAL, THOTHUKUDI', 8.6266415, 78.0238197]];
+                        
+    // Info window content
+    var infoWindowContent_unsafe = [
+        ['<div class="info_content">' +'<h2>CAUVERY AT PALLIPPALAYAM</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.79 <b>EC:</b> 479.08 <b>BOD:</b> 1.49 <b>DO:</b> 5.6</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT TRICHY,GRAND ANAICUT</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.75 <b>EC:</b> 807.42 <b>BOD:</b> 1.85 <b>DO:</b> 5.52</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT KOMARAPALAYAM, NAMAKA</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.79 <b>EC:</b> 479.73 <b>BOD:</b> 2.47 <b>DO:</b> 5.25</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT TIRUNELVELI,COLLECTORATE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.66 <b>EC:</b> 139.07 <b>BOD:</b> 3.14 <b>DO:</b> 6.7</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT ERAL, THOTHUKUDI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.3 <b>EC:</b> 509.8 <b>BOD:</b> 2.92 <b>DO:</b> 7.19</p>' + '</div>']
+    ];
+
+    var infoWindowContent_safe = [
+        ['<div class="info_content">' +'<h2>CAUVERY AT METTUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.9 <b>EC:</b> 476.58 <b>BOD:</b> 1.12 <b>DO:</b> 6.24</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT MUSIRI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.99 <b>EC:</b> 651.67 <b>BOD:</b> 1.12 <b>DO:</b> 6.99</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT PETTAIVAITHALAI, TRICHY</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.92 <b>EC:</b> 684.42 <b>BOD:</b> 1.19 <b>DO:</b> 6.78</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT TIRUCHIRAPPALLI U/S</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.93 <b>EC:</b> 589.33 <b>BOD:</b> 1.09 <b>DO:</b> 7.08</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT MAYILADUTHURAI, NAGAPATTINAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.96 <b>EC:</b> 722.0 <b>BOD:</b> 0.82 <b>DO:</b> 6.16</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT KUMBAKONAM, THANJAVUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.96 <b>EC:</b> 571.22 <b>BOD:</b> 1.2 <b>DO:</b> 6.72</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT PAPPANKULAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.11 <b>EC:</b> 95.23 <b>BOD:</b> 1.91 <b>DO:</b> 6.98</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT KALLIDAI KURICHI, TIRUNELVELI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.4 <b>EC:</b> 87.88 <b>BOD:</b> 1.82 <b>DO:</b> 7.07</p>' + '</div>']
+    ];
+        
+    // Add multiple markers to map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+
+    var pinColor_safe = "006400";
+    var pinImage_safe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_safe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+
+    var pinColor_unsafe = "FE7569";
+    var pinImage_unsafe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_unsafe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+    
+    // Place each marker on the map  
+    for( i = 0; i < safe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(safe_markers[i][1], safe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_safe,
+            title: safe_markers[i][0]
+        });
+
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_safe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    for( i = 0; i < unsafe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(unsafe_markers[i][1], unsafe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_unsafe,
+            title: unsafe_markers[i][0]
+        });
+
+
+        
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_unsafe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    // Set zoom level
+    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+        this.setZoom(14);
+        google.maps.event.removeListener(boundsListener);
+    });
+    
+}
+// Load initialize function
+google.maps.event.addDomListener(window, 'load', initMap);
+</script>
+<div id="mapContainer">
+    <div id="mapCanvas"></div>
+</div>
+
+</body>
+</html>

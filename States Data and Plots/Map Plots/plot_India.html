@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<title>Google Maps with Multiple Markers by CodexWorld</title>
+<style type="text/css">
+#mapContainer {
+    height: 650px;
+}
+
+#mapCanvas {
+    width: 100%;
+    height: 100%;
+}
+</style>
+
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWZ2IDESUpL3pF9dx73FO_vOy3JF7a2AY"></script>
+<script src="safe_markers.json"></script>
+<script>
+
+var safe_markers
+
+$.get("link here", function(response) {
+     safe_markers = response;
+});
+
+function initMap() {
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    var mapOptions = {
+        mapTypeId: 'roadmap'
+    };
+                    
+    // Display a map on the web page
+    map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+    map.setTilt(50);
+
+    /*var fs = require('fs');
+fs.readFile('safe_markers.txt', function(err, data) {
+    if(err) throw err;
+    var safe_markers = "["+data.toString().split("\n")+"]";
+});*/
+        
+    // Multiple markers location, latitude, and longitude
+    //var safe_markers = JSON.parse(safe_markers);
+    /*var safe_markers = [['BAITARNI AT JODA', 22.019266899999998, 85.4066],
+['BAITARNI AT ANANDPUR', 21.214848800000002, 86.12489670000001],
+['BAITARNI AT JAJPUR', 20.7652197, 86.17517590000001],
+['BEAS AT U/S MANALI', 32.2449468, 77.19108],
+['BEAS AT U/S MANDI', 31.8721275, 76.6437628],
+['BEAS AT D/S MANALI', 32.2449468, 77.19108],
+['BEAS AT U/S PATHANKOT', 32.2649632, 75.6779087],
+['BEAS AT HARIKE,', 31.17, 75.2],
+['BRAHMANI AT BONAIGARH', 21.820617000000002, 84.951573],
+['BRAHMANI AT RENGALI', 21.2758532, 85.0350672],
+['TALCHER FD/S', 20.9552785, 85.22260159999999],
+['BRAHMANI AT BHUBAN', 20.879316199999998, 85.8358259],
+['BRAHAMPUTRA AT DIBRUGARH', 27.472832699999998, 94.9119621],
+['BRAHAMPUTRA AT NIMATIGHAT', 26.4821716, 92.52009100000001],
+['BRAHAMPUTRA AT PANDU', 26.4821716, 92.52009100000001],
+['BRAHMAPUTRA AT CHANDRAPUR, GUWAHATI', 26.181697800000002, 91.83599050000001],
+['BRAHMPUTRA AT SUALKUCHI, DIST. KAMRUP', 26.1703301, 91.570327],
+['BRAHMAPUTRA AT DHUBRI', 26.020698199999998, 89.9743463],
+['CAUVERY AT BANNUR BRIDGE', 12.259675699999999, 77.1711804],
+['CAUVERY AT RANGANATHITTU', 12.4243603, 76.65634920000001],
+['CAUVERY AT METTUR', 11.7862533, 77.8007853],
+['CAUVERY AT MUSIRI', 10.9548837, 78.44393199999999],
+['CAUVERY AT PETTAIVAITHALAI, TRICHY', 10.901053, 78.4894015],
+['CAUVERY AT TIRUCHIRAPPALLI U/S', 10.8323794, 78.68146429999999],
+['CAUVERY AT THANJAVUR', 10.786999400000001, 79.1378274],
+['CAUVERY AT MAYILADUTHURAI, NAGAPATTINAM', 11.1018399, 79.65222179999999],
+['CAUVERY AT KUMBAKONAM, THANJAVUR', 10.9616945, 79.38811319999999],
+['DHANSIRI AT GOLAGHAT', 26.629371999999996, 93.7779642],
+['GODAVARI AT BASARA, ADILABAD', 18.880175100000002, 77.9538767],
+['GODAVARI AT POLAVARAM', 17.2478932, 81.6432353],
+['MANJEERA - NEAR GANAPATHI SUGARS , MEDAK DIST', 17.4238352, 78.44456770000001],
+['SABARI AT KUNAVARAM, KHAMMAM', 17.733475, 81.3333091],
+['KRISHNA AT AMARAVATI , GUNTUR', 16.572983100000002, 80.35751280000001],
+['KRISHNA AT VIJAYWADA', 16.5061743, 80.6480153],
+['MAHANADI AT SAMBALPUR U/S', 21.4561488, 83.97657530000001],
+['MAHANADI AT TIKARPADA', 20.6131507, 84.79159990000001],
+['MAHANADI AT CUTTACK U/S', 20.4647228, 85.9123503],
+['TAMBIRAPARANI AT PAPPANKULAM', 8.7791961, 77.4250145],
+['TAMBIRAPARANI AT KALLIDAI KURICHI, TIRUNELVELI', 8.6967761, 77.7215153]];*/
+
+    var unsafe_markers = [['BAITARNI AT CHANDBALI', 20.773991600000002, 86.74369509999998],
+['BRAHMANI AT PATTAMUNDAI', 20.5854927, 86.5661006],
+['CAUVERY AT PALLIPPALAYAM', 11.3749976, 77.7509303],
+['CAUVERY AT TRICHY,GRAND ANAICUT', 10.832101300000001, 78.81767629999999],
+['CAUVERY AT KOMARAPALAYAM, NAMAKA', 11.446664199999999, 77.6943353],
+['MAHANANDA AT SILIGURI', 26.7271012, 88.39528609999999],
+['GANGA AT GARHMUKTESHWAR', 28.789221, 78.0823084],
+['GANGA U/S, ANOOPSHAHAR', 28.364526799999997, 78.2732828],
+['GANGA AT NARORA (BULANDSAHAR)', 28.196777, 78.3813785],
+['GANGA AT BITHOOR (KANPUR)', 26.613781300000003, 80.2747261],
+['GANGA AT DALMAU (RAI BAREILLY)', 26.0682359, 81.0616662],
+['GANGA AT ALLAHABAD (RASOOLABAD)', 25.494142, 81.858463],
+['GANGA U/S, VINDHYACHAL, MIRZAPUR', 25.1489766, 82.54936459999999],
+['GANGA AT TRIGHAT (GHAZIPUR)', 25.5714594, 83.602277],
+['GANGA AT BAHARAMPORE', 24.0893345, 88.25659399999999],
+['GANGA AT SERAMPORE', 22.7480685, 88.3484297],
+['GANGA AT DAKSHMINESWAR', 22.664867, 88.360054],
+['GANGA AT HOWRAH-SHIVPUR', 22.569812, 88.32664790000001],
+['GANGA AT DIAMOND HARBOUR', 22.180963000000002, 88.19257940000001],
+['GODAVARI RIVER NEAR SOMESHWAR TEMPLE.', 20.023084, 73.72859100000001],
+['GODAVARI RIVER AT NANDUR- MADMESHWAR DAM.', 20.009017, 74.1322893],
+['GODAVARI NEAR TAPOVAN.', 19.9998715, 73.8151175],
+['GODAVARI AT PANCHAVATI AT RAMKUND', 20.005822, 73.7932993],
+['GODAVARI AT NASIK D/S', 19.9936418, 73.7957527],
+['GODAVARI AT NANDED', 19.184627600000002, 77.3000155],
+['GODAVARI D/S OF RAMANUGUNDAM,', 17.440279999999998, 78.489628],
+['GODAVARI AT MANCHERIAL', 18.8755953, 79.45913780000001],
+['GODAVARI AT BURGAMPAHAD, KHAMMAM', 17.6446434, 80.86683690000001],
+['GODAVARI AT RAJAHMUNDRY U/S', 17.007585600000002, 81.7637676],
+['GODAVARI AT RAJAMUNDRY D/S OF NALLA CHANNEL', 17.00711, 81.7713153],
+['GODAVARI AT RAJAHMUNDRY D/S', 17.007585600000002, 81.7637676],
+['MANER AT WARANGAL U/S', 18.005915100000003, 79.56948050000001],
+['WAINGANGA AT ASHTI', 19.6674903, 79.7988547],
+['KANHAN D/S OF NAGPUR', 21.232008, 79.237701],
+['KRISHNA AT KRISHNA BRIDGE, KARAD', 17.2602936, 74.1756964],
+['KRISHNA AT SANGLI', 16.8523973, 74.58147729999999],
+['KRISHNA AT KURUNDWAD IN KOLHAPUR', 16.708589, 74.242142],
+['KRISHNA AT KSHETRA MAHULI.', 17.6909313, 74.0579185],
+['KRISHNA AT KRISHNA-VENNA SANGAM, MAHULI', 17.6918199, 74.05108359999998],
+['KRISHNA RIVER AT WAI.', 17.9486823, 73.8918897],
+['KRISHNA AT THANGADI , MAHABOOBNAGAR', 16.4101647, 77.3286734],
+['MAHANADI AT SAMBALPUR D/S', 21.4561488, 83.97657530000001],
+['MAHANADI AT PARADEEPD/S', 20.3165523, 86.61136280000001],
+['MAHI AT SEVALIA', 22.810074899999996, 73.34434250000001],
+['TAMBIRAPARANI AT TIRUNELVELI,COLLECTORATE', 8.715188000000001, 77.370822],
+['TAMBIRAPARANI AT ERAL, THOTHUKUDI', 8.6266415, 78.0238197],
+['MAHIM CREEK AT MAHIM BAY', 19.0312098, 72.8249607],
+['THANE CREEK AT KALWA ROAD BRIDGE, KALWA, THANE', 19.197002800000003, 72.98560259999999],
+['VASHI CREEK AT VASHII BRIDGE.', 19.0624142, 72.97345759999999],
+['SARAWALI CREEK, SARAWALI, PALGHAR, THANE', 19.978268300000003, 72.7777596],
+['SAVTA CREEK, SAVTA, DAHANU, THANE', 19.965473, 72.77647879999999],
+['DAHANU CREEK AT DAHANU FORT', 19.9727735, 72.72050290000001],
+['SEA WATER AT GATEWAY OF INDIA.', 18.921984100000003, 72.8346543],
+['SEA WATER AT CHARNI ROAD CHOUPATHY.', 18.9515801, 72.8187988],
+['SEA WATER AT VERSOVA.', 19.050572600000002, 72.8271479],
+['ARNALA SEA, ARNALA, VASAI, THANE', 19.453126, 72.751275],
+['UTTAN SEA, UTTAN, BHAYANDER, THANE', 19.302184, 72.78729],
+['SEA WATER AT NARIMAN POINT', 18.9335318, 72.8258781],
+['SEA WATER AT MALABAR HILL, WALKESHWAR, MUMBAI', 18.945638199999998, 72.7932669],
+['SEA WATER AT HAJI ALI, WORLI, MUMBAI', 18.982747, 72.8089648],
+['SEA WATER AT SHIVAJI PARK, DADAR, MUMBAI', 19.0270694, 72.8381012],
+['SEA WATER AT GANAPATHIPULE, RATNAGIRI.', 17.143573, 73.275042],
+['PURI', 19.8133822, 85.83146550000001],
+['PARADEEP', 20.3165523, 86.61136280000001],
+['GOPALPUR', 19.264720800000003, 84.8620054],
+['SAMARLA KOTA CANAL, KAKINADA,EAST GODAVARI', 16.9124038, 81.8248844]];
+                        
+    // Info window content
+    var infoWindowContent_safe = [
+['<div class="info_content">' +'<h2>BAITARNI AT JODA</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.81 <b>EC:</b> 120.08 <b>BOD:</b> 1.47 <b>DO:</b> 7.68</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BAITARNI AT ANANDPUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.83 <b>EC:</b> 149.58 <b>BOD:</b> 1.33 <b>DO:</b> 7.77</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BAITARNI AT JAJPUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.72 <b>EC:</b> 169.83 <b>BOD:</b> 1.94 <b>DO:</b> 7.33</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BEAS AT U/S MANALI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.83154 <b>EC:</b> 89.4615 <b>BOD:</b> 0.16923 <b>DO:</b> 8.7</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BEAS AT U/S MANDI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 8.05154 <b>EC:</b> 131.923 <b>BOD:</b> 0.18462 <b>DO:</b> 8.98462</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BEAS AT D/S MANALI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.74231 <b>EC:</b> 82.9231 <b>BOD:</b> 0.22308 <b>DO:</b> 8.55385</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BEAS AT U/S PATHANKOT</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.25 <b>EC:</b> 274.25 <b>BOD:</b> 0.75 <b>DO:</b> 7.275</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BEAS AT HARIKE,</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.225 <b>EC:</b> 292.25 <b>BOD:</b> 0.55 <b>DO:</b> 7.525</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHMANI AT BONAIGARH</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.8 <b>EC:</b> 180.67 <b>BOD:</b> 1.29 <b>DO:</b> 8.18</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHMANI AT RENGALI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.71 <b>EC:</b> 136.5 <b>BOD:</b> 1.33 <b>DO:</b> 7.51</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TALCHER FD/S</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.81 <b>EC:</b> 170.58 <b>BOD:</b> 1.83 <b>DO:</b> 7.58</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHMANI AT BHUBAN</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.84 <b>EC:</b> 146.5 <b>BOD:</b> 1.38 <b>DO:</b> 7.98</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHAMPUTRA AT DIBRUGARH</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.18 <b>EC:</b> 129.67 <b>BOD:</b> 1.69 <b>DO:</b> 7.61</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHAMPUTRA AT NIMATIGHAT</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.21 <b>EC:</b> 137.42 <b>BOD:</b> 1.45 <b>DO:</b> 6.49</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHAMPUTRA AT PANDU</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.21 <b>EC:</b> 144.0 <b>BOD:</b> 1.22 <b>DO:</b> 7.45</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHMAPUTRA AT CHANDRAPUR, GUWAHATI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.43 <b>EC:</b> 159.75 <b>BOD:</b> 0.88 <b>DO:</b> 6.9</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHMPUTRA AT SUALKUCHI, DIST. KAMRUP</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.05 <b>EC:</b> 151.75 <b>BOD:</b> 0.75 <b>DO:</b> 7.75</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHMAPUTRA AT DHUBRI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.45 <b>EC:</b> 125.0 <b>BOD:</b> 1.63 <b>DO:</b> 6.78</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT BANNUR BRIDGE</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.94 <b>EC:</b> 364.58 <b>BOD:</b> 1.92 <b>DO:</b> 11.76</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT RANGANATHITTU</h2><h3>Safe</h3>' + '<p><b>ph:</b> 8.0 <b>EC:</b> 268.92 <b>BOD:</b> 2.0 <b>DO:</b> 6.47</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT METTUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.9 <b>EC:</b> 476.58 <b>BOD:</b> 1.12 <b>DO:</b> 6.24</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT MUSIRI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.99 <b>EC:</b> 651.67 <b>BOD:</b> 1.12 <b>DO:</b> 6.99</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT PETTAIVAITHALAI, TRICHY</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.92 <b>EC:</b> 684.42 <b>BOD:</b> 1.19 <b>DO:</b> 6.78</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT TIRUCHIRAPPALLI U/S</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.93 <b>EC:</b> 589.33 <b>BOD:</b> 1.09 <b>DO:</b> 7.08</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT THANJAVUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 8.17 <b>EC:</b> 766.67 <b>BOD:</b> 0.98 <b>DO:</b> 6.93</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT MAYILADUTHURAI, NAGAPATTINAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.96 <b>EC:</b> 722.0 <b>BOD:</b> 0.82 <b>DO:</b> 6.16</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT KUMBAKONAM, THANJAVUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.96 <b>EC:</b> 571.22 <b>BOD:</b> 1.2 <b>DO:</b> 6.72</p>' + '</div>'],
+['<div class="info_content">' +'<h2>DHANSIRI AT GOLAGHAT</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.08 <b>EC:</b> 146.75 <b>BOD:</b> 1.45 <b>DO:</b> 6.63</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT BASARA, ADILABAD</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.73 <b>EC:</b> 516.55 <b>BOD:</b> 1.82 <b>DO:</b> 6.26</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT POLAVARAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.81 <b>EC:</b> 254.0 <b>BOD:</b> 1.05 <b>DO:</b> 6.08</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MANJEERA - NEAR GANAPATHI SUGARS , MEDAK DIST</h2><h3>Safe</h3>' + '<p><b>ph:</b> 8.24 <b>EC:</b> 397.64 <b>BOD:</b> 1.55 <b>DO:</b> 6.79</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SABARI AT KUNAVARAM, KHAMMAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.21 <b>EC:</b> 97.45 <b>BOD:</b> 0.5 <b>DO:</b> 6.95</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT AMARAVATI , GUNTUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.49 <b>EC:</b> 578.91 <b>BOD:</b> 0.54 <b>DO:</b> 6.28</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT VIJAYWADA</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.66 <b>EC:</b> 563.73 <b>BOD:</b> 0.53 <b>DO:</b> 6.61</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHANADI AT SAMBALPUR U/S</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.98 <b>EC:</b> 179.5 <b>BOD:</b> 1.64 <b>DO:</b> 7.75</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHANADI AT TIKARPADA</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.77 <b>EC:</b> 181.25 <b>BOD:</b> 1.4 <b>DO:</b> 8.27</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHANADI AT CUTTACK U/S</h2><h3>Safe</h3>' + '<p><b>ph:</b> 8.08 <b>EC:</b> 188.92 <b>BOD:</b> 1.5 <b>DO:</b> 8.23</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT PAPPANKULAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.11 <b>EC:</b> 95.23 <b>BOD:</b> 1.91 <b>DO:</b> 6.98</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT KALLIDAI KURICHI, TIRUNELVELI</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.4 <b>EC:</b> 87.88 <b>BOD:</b> 1.82 <b>DO:</b> 7.07</p>' + '</div>']
+    ];
+
+    // Info window content
+    var infoWindowContent_unsafe = [
+['<div class="info_content">' +'<h2>BAITARNI AT CHANDBALI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.84 <b>EC:</b> 4961.33 <b>BOD:</b> 1.39 <b>DO:</b> 7.33</p>' + '</div>'],
+['<div class="info_content">' +'<h2>BRAHMANI AT PATTAMUNDAI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.8 <b>EC:</b> 196.17 <b>BOD:</b> 2.03 <b>DO:</b> 7.98</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT PALLIPPALAYAM</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.79 <b>EC:</b> 479.08 <b>BOD:</b> 1.49 <b>DO:</b> 5.6</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT TRICHY,GRAND ANAICUT</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.75 <b>EC:</b> 807.42 <b>BOD:</b> 1.85 <b>DO:</b> 5.52</p>' + '</div>'],
+['<div class="info_content">' +'<h2>CAUVERY AT KOMARAPALAYAM, NAMAKA</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.79 <b>EC:</b> 479.73 <b>BOD:</b> 2.47 <b>DO:</b> 5.25</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHANANDA AT SILIGURI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.3 <b>EC:</b> 165.55 <b>BOD:</b> 2.98 <b>DO:</b> 6.83</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT GARHMUKTESHWAR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.38 <b>EC:</b> 219.75 <b>BOD:</b> 3.37 <b>DO:</b> 8.58</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA U/S, ANOOPSHAHAR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.33 <b>EC:</b> 221.75 <b>BOD:</b> 3.12 <b>DO:</b> 9.22</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT NARORA (BULANDSAHAR)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.34 <b>EC:</b> 216.25 <b>BOD:</b> 2.65 <b>DO:</b> 9.34</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT BITHOOR (KANPUR)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.21 <b>EC:</b> 104.82 <b>BOD:</b> 4.13 <b>DO:</b> 8.71</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT DALMAU (RAI BAREILLY)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.87 <b>EC:</b> 240.42 <b>BOD:</b> 3.5 <b>DO:</b> 7.74</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT ALLAHABAD (RASOOLABAD)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.25 <b>EC:</b> 458.83 <b>BOD:</b> 5.58 <b>DO:</b> 7.42</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA U/S, VINDHYACHAL, MIRZAPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.89 <b>EC:</b> 455.69 <b>BOD:</b> 2.77 <b>DO:</b> 8.51</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT TRIGHAT (GHAZIPUR)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.46 <b>EC:</b> 288.25 <b>BOD:</b> 3.67 <b>DO:</b> 7.61</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT BAHARAMPORE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.82 <b>EC:</b> 281.18 <b>BOD:</b> 3.42 <b>DO:</b> 7.63</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT SERAMPORE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.99 <b>EC:</b> 280.12 <b>BOD:</b> 2.35 <b>DO:</b> 7.0</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT DAKSHMINESWAR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.82 <b>EC:</b> 314.58 <b>BOD:</b> 4.13 <b>DO:</b> 6.08</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT HOWRAH-SHIVPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.81 <b>EC:</b> 305.83 <b>BOD:</b> 2.94 <b>DO:</b> 6.02</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT DIAMOND HARBOUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.91 <b>EC:</b> 2447.92 <b>BOD:</b> 2.43 <b>DO:</b> 6.67</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI RIVER NEAR SOMESHWAR TEMPLE.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.58 <b>EC:</b> 285.23 <b>BOD:</b> 5.13 <b>DO:</b> 5.83</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI RIVER AT NANDUR- MADMESHWAR DAM.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.46 <b>EC:</b> 312.25 <b>BOD:</b> 5.5 <b>DO:</b> 5.66</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI NEAR TAPOVAN.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.49 <b>EC:</b> 425.9 <b>BOD:</b> 8.88 <b>DO:</b> 4.7</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT PANCHAVATI AT RAMKUND</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.43 <b>EC:</b> 407.3 <b>BOD:</b> 6.13 <b>DO:</b> 5.14</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT NASIK D/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.4 <b>EC:</b> 406.58 <b>BOD:</b> 6.46 <b>DO:</b> 5.31</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT NANDED</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.13 <b>EC:</b> 565.28 <b>BOD:</b> 4.26 <b>DO:</b> 6.36</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI D/S OF RAMANUGUNDAM,</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.14 <b>EC:</b> 582.71 <b>BOD:</b> 6.36 <b>DO:</b> 4.57</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT MANCHERIAL</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.18 <b>EC:</b> 547.38 <b>BOD:</b> 8.8 <b>DO:</b> 6.35</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT BURGAMPAHAD, KHAMMAM</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.18 <b>EC:</b> 561.91 <b>BOD:</b> 2.04 <b>DO:</b> 5.59</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT RAJAHMUNDRY U/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.69 <b>EC:</b> 244.55 <b>BOD:</b> 1.04 <b>DO:</b> 5.95</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT RAJAMUNDRY D/S OF NALLA CHANNEL</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.35 <b>EC:</b> 313.27 <b>BOD:</b> 1.15 <b>DO:</b> 5.93</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT RAJAHMUNDRY D/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.45 <b>EC:</b> 284.0 <b>BOD:</b> 1.16 <b>DO:</b> 5.98</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MANER AT WARANGAL U/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.91 <b>EC:</b> 567.5 <b>BOD:</b> 15.4 <b>DO:</b> 5.19</p>' + '</div>'],
+['<div class="info_content">' +'<h2>WAINGANGA AT ASHTI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.14 <b>EC:</b> 728.17 <b>BOD:</b> 5.56 <b>DO:</b> 5.89</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KANHAN D/S OF NAGPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.1 <b>EC:</b> 696.67 <b>BOD:</b> 7.07 <b>DO:</b> 5.18</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KRISHNA BRIDGE, KARAD</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.74 <b>EC:</b> 205.38 <b>BOD:</b> 6.79 <b>DO:</b> 5.26</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT SANGLI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.81 <b>EC:</b> 773.86 <b>BOD:</b> 3.15 <b>DO:</b> 6.53</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KURUNDWAD IN KOLHAPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.57 <b>EC:</b> 556.13 <b>BOD:</b> 3.58 <b>DO:</b> 6.57</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KSHETRA MAHULI.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.86 <b>EC:</b> 435.18 <b>BOD:</b> 7.27 <b>DO:</b> 4.87</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KRISHNA-VENNA SANGAM, MAHULI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.97 <b>EC:</b> 407.81 <b>BOD:</b> 6.87 <b>DO:</b> 4.99</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA RIVER AT WAI.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.85 <b>EC:</b> 323.77 <b>BOD:</b> 8.05 <b>DO:</b> 4.53</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT THANGADI , MAHABOOBNAGAR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.99 <b>EC:</b> 766.46 <b>BOD:</b> 8.78 <b>DO:</b> 6.75</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHANADI AT SAMBALPUR D/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.02 <b>EC:</b> 195.58 <b>BOD:</b> 2.81 <b>DO:</b> 6.86</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHANADI AT PARADEEPD/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.05 <b>EC:</b> 18179.3 <b>BOD:</b> 2.2 <b>DO:</b> 7.33</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHI AT SEVALIA</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.24 <b>EC:</b> 358.5 <b>BOD:</b> 2.33 <b>DO:</b> 8.8</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT TIRUNELVELI,COLLECTORATE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.66 <b>EC:</b> 139.07 <b>BOD:</b> 3.14 <b>DO:</b> 6.7</p>' + '</div>'],
+['<div class="info_content">' +'<h2>TAMBIRAPARANI AT ERAL, THOTHUKUDI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.3 <b>EC:</b> 509.8 <b>BOD:</b> 2.92 <b>DO:</b> 7.19</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHIM CREEK AT MAHIM BAY</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.48 <b>EC:</b> 40025.3 <b>BOD:</b> 12.12 <b>DO:</b> 4.5</p>' + '</div>'],
+['<div class="info_content">' +'<h2>THANE CREEK AT KALWA ROAD BRIDGE, KALWA, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.41 <b>EC:</b> 16482.9 <b>BOD:</b> 21.61 <b>DO:</b> 3.43</p>' + '</div>'],
+['<div class="info_content">' +'<h2>VASHI CREEK AT VASHII BRIDGE.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.42 <b>EC:</b> 37849.3 <b>BOD:</b> 9.18 <b>DO:</b> 5.13</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SARAWALI CREEK, SARAWALI, PALGHAR, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.88 <b>EC:</b> 10203.7 <b>BOD:</b> 8.68 <b>DO:</b> 4.88</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SAVTA CREEK, SAVTA, DAHANU, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.01 <b>EC:</b> 36781.8 <b>BOD:</b> 8.25 <b>DO:</b> 5.44</p>' + '</div>'],
+['<div class="info_content">' +'<h2>DAHANU CREEK AT DAHANU FORT</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.03 <b>EC:</b> 36643.8 <b>BOD:</b> 8.74 <b>DO:</b> 5.5</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT GATEWAY OF INDIA.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.69 <b>EC:</b> 52860.0 <b>BOD:</b> 10.72 <b>DO:</b> 4.61</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT CHARNI ROAD CHOUPATHY.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.66 <b>EC:</b> 51690.0 <b>BOD:</b> 10.68 <b>DO:</b> 4.72</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT VERSOVA.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.79 <b>EC:</b> 50604.9 <b>BOD:</b> 11.64 <b>DO:</b> 4.41</p>' + '</div>'],
+['<div class="info_content">' +'<h2>ARNALA SEA, ARNALA, VASAI, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.94 <b>EC:</b> 46329.5 <b>BOD:</b> 9.5 <b>DO:</b> 5.18</p>' + '</div>'],
+['<div class="info_content">' +'<h2>UTTAN SEA, UTTAN, BHAYANDER, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.98 <b>EC:</b> 46166.4 <b>BOD:</b> 10.11 <b>DO:</b> 5.52</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT NARIMAN POINT</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.6 <b>EC:</b> 54593.6 <b>BOD:</b> 10.87 <b>DO:</b> 4.78</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT MALABAR HILL, WALKESHWAR, MUMBAI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.67 <b>EC:</b> 52354.5 <b>BOD:</b> 10.55 <b>DO:</b> 4.55</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT HAJI ALI, WORLI, MUMBAI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.75 <b>EC:</b> 54210.0 <b>BOD:</b> 9.63 <b>DO:</b> 4.56</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT SHIVAJI PARK, DADAR, MUMBAI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.72 <b>EC:</b> 54160.0 <b>BOD:</b> 10.55 <b>DO:</b> 4.78</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT GANAPATHIPULE, RATNAGIRI.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.95 <b>EC:</b> 31535.5 <b>BOD:</b> 4.05 <b>DO:</b> 6.25</p>' + '</div>'],
+['<div class="info_content">' +'<h2>PURI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.03 <b>EC:</b> 40106.7 <b>BOD:</b> 1.28 <b>DO:</b> 7.05</p>' + '</div>'],
+['<div class="info_content">' +'<h2>PARADEEP</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.93 <b>EC:</b> 41071.7 <b>BOD:</b> 1.18 <b>DO:</b> 7.07</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GOPALPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.93 <b>EC:</b> 41660.0 <b>BOD:</b> 1.59 <b>DO:</b> 6.98</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SAMARLA KOTA CANAL, KAKINADA,EAST GODAVARI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.37 <b>EC:</b> 338.18 <b>BOD:</b> 1.13 <b>DO:</b> 5.85</p>' + '</div>']
+    ];
+        
+    // Add multiple markers to map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+
+    var pinColor_safe = "006400";
+    var pinImage_safe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_safe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+
+    var pinColor_unsafe = "FE7569";
+    var pinImage_unsafe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_unsafe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+    
+    // Place each marker on the map  
+    for( i = 0; i < safe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(safe_markers[i][1], safe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_safe,
+            title: safe_markers[i][0]
+        });
+
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_safe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    for( i = 0; i < unsafe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(unsafe_markers[i][1], unsafe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_unsafe,
+            title: unsafe_markers[i][0]
+        });
+
+
+        
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_unsafe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    // Set zoom level
+    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+        this.setZoom(6);
+        google.maps.event.removeListener(boundsListener);
+    });
+    
+}
+// Load initialize function
+google.maps.event.addDomListener(window, 'load', initMap);
+</script>
+<div id="mapContainer">
+    <div id="mapCanvas"></div>
+</div>
+
+</body>
+</html>

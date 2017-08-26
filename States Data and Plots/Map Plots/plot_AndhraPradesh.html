@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<title>Google Maps with Multiple Markers by CodexWorld</title>
+<style type="text/css">
+#mapContainer {
+    height: 650px;
+}
+
+#mapCanvas {
+    width: 100%;
+    height: 100%;
+}
+</style>
+
+</head>
+<body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWZ2IDESUpL3pF9dx73FO_vOy3JF7a2AY"></script>
+<script>
+function initMap() {
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    var mapOptions = {
+        mapTypeId: 'roadmap'
+    };
+                    
+    // Display a map on the web page
+    map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+    map.setTilt(50);
+        
+    // Multiple markers location, latitude, and longitude
+    var safe_markers = [['GODAVARI AT BASARA, ADILABAD', 18.880175100000002, 77.9538767], ['GODAVARI AT POLAVARAM', 17.2478932, 81.6432353], ['MANJEERA - NEAR GANAPATHI SUGARS , MEDAK DIST', 17.4238352, 78.44456770000001], ['SABARI AT KUNAVARAM, KHAMMAM', 17.733475, 81.3333091], ['KRISHNA AT AMARAVATI , GUNTUR', 16.572983100000002, 80.35751280000001], ['KRISHNA AT VIJAYWADA', 16.5061743, 80.6480153]];
+
+    var unsafe_markers = [['GODAVARI D/S OF RAMANUGUNDAM,', 17.440279999999998, 78.489628], ['GODAVARI AT MANCHERIAL', 18.8755953, 79.45913780000001], ['GODAVARI AT BURGAMPAHAD, KHAMMAM', 17.6446434, 80.86683690000001], ['GODAVARI AT RAJAHMUNDRY U/S', 17.007585600000002, 81.7637676], ['GODAVARI AT RAJAMUNDRY D/S OF NALLA CHANNEL', 17.00711, 81.7713153], ['GODAVARI AT RAJAHMUNDRY D/S', 17.007585600000002, 81.7637676], ['MANER AT WARANGAL U/S', 18.005915100000003, 79.56948050000001], ['KRISHNA AT THANGADI , MAHABOOBNAGAR', 16.4101647, 77.3286734], ['SAMARLA KOTA CANAL, KAKINADA,EAST GODAVARI', 16.9124038, 81.8248844]];
+                        
+    // Info window content
+    var infoWindowContent_safe = [
+        ['<div class="info_content">' +'<h2>GODAVARI AT BASARA, ADILABAD</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.73 <b>EC:</b> 516.55 <b>BOD:</b> 1.82 <b>DO:</b> 6.26</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT POLAVARAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.81 <b>EC:</b> 254.0 <b>BOD:</b> 1.05 <b>DO:</b> 6.08</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MANJEERA - NEAR GANAPATHI SUGARS , MEDAK DIST</h2><h3>Safe</h3>' + '<p><b>ph:</b> 8.24 <b>EC:</b> 397.64 <b>BOD:</b> 1.55 <b>DO:</b> 6.79</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SABARI AT KUNAVARAM, KHAMMAM</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.21 <b>EC:</b> 97.45 <b>BOD:</b> 0.5 <b>DO:</b> 6.95</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT AMARAVATI , GUNTUR</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.49 <b>EC:</b> 578.91 <b>BOD:</b> 0.54 <b>DO:</b> 6.28</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT VIJAYWADA</h2><h3>Safe</h3>' + '<p><b>ph:</b> 7.66 <b>EC:</b> 563.73 <b>BOD:</b> 0.53 <b>DO:</b> 6.61</p>' + '</div>']
+    ];
+
+     var infoWindowContent_unsafe = [
+        ['<div class="info_content">' +'<h2>GODAVARI D/S OF RAMANUGUNDAM,</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.14 <b>EC:</b> 582.71 <b>BOD:</b> 6.36 <b>DO:</b> 4.57</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT MANCHERIAL</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.18 <b>EC:</b> 547.38 <b>BOD:</b> 8.8 <b>DO:</b> 6.35</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT BURGAMPAHAD, KHAMMAM</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.18 <b>EC:</b> 561.91 <b>BOD:</b> 2.04 <b>DO:</b> 5.59</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT RAJAHMUNDRY U/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.69 <b>EC:</b> 244.55 <b>BOD:</b> 1.04 <b>DO:</b> 5.95</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT RAJAMUNDRY D/S OF NALLA CHANNEL</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.35 <b>EC:</b> 313.27 <b>BOD:</b> 1.15 <b>DO:</b> 5.93</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT RAJAHMUNDRY D/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.45 <b>EC:</b> 284.0 <b>BOD:</b> 1.16 <b>DO:</b> 5.98</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MANER AT WARANGAL U/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.91 <b>EC:</b> 567.5 <b>BOD:</b> 15.4 <b>DO:</b> 5.19</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT THANGADI , MAHABOOBNAGAR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.99 <b>EC:</b> 766.46 <b>BOD:</b> 8.78 <b>DO:</b> 6.75</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SAMARLA KOTA CANAL, KAKINADA,EAST GODAVARI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.37 <b>EC:</b> 338.18 <b>BOD:</b> 1.13 <b>DO:</b> 5.85</p>' + '</div>']
+    ];
+        
+    // Add multiple markers to map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+
+    var pinColor_safe = "006400";
+    var pinImage_safe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_safe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+
+    var pinColor_unsafe = "FE7569";
+    var pinImage_unsafe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_unsafe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+    
+    // Place each marker on the map  
+    for( i = 0; i < safe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(safe_markers[i][1], safe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_safe,
+            title: safe_markers[i][0]
+        });
+
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_safe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    for( i = 0; i < unsafe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(unsafe_markers[i][1], unsafe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_unsafe,
+            title: unsafe_markers[i][0]
+        });
+
+
+        
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_unsafe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    // Set zoom level
+    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+        this.setZoom(6);
+        google.maps.event.removeListener(boundsListener);
+    });
+    
+}
+// Load initialize function
+google.maps.event.addDomListener(window, 'load', initMap);
+</script>
+<div id="mapContainer">
+    <div id="mapCanvas"></div>
+</div>
+
+</body>
+</html>

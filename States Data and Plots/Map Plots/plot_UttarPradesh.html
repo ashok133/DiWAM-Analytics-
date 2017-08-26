@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<title>Google Maps with Multiple Markers by CodexWorld</title>
+<style type="text/css">
+#mapContainer {
+    height: 650px;
+}
+
+#mapCanvas {
+    width: 100%;
+    height: 100%;
+}
+</style>
+
+</head>
+<body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWZ2IDESUpL3pF9dx73FO_vOy3JF7a2AY"></script>
+<script>
+function initMap() {
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    var mapOptions = {
+        mapTypeId: 'roadmap'
+    };
+                    
+    // Display a map on the web page
+    map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+    map.setTilt(50);
+        
+    // Multiple markers location, latitude, and longitude
+    var safe_markers = [];
+
+    var unsafe_markers = [['GANGA AT GARHMUKTESHWAR', 28.789221, 78.0823084], ['GANGA U/S, ANOOPSHAHAR', 28.364526799999997, 78.2732828], ['GANGA AT NARORA (BULANDSAHAR)', 28.196777, 78.3813785], ['GANGA AT BITHOOR (KANPUR)', 26.613781300000003, 80.2747261], ['GANGA AT DALMAU (RAI BAREILLY)', 26.0682359, 81.0616662], ['GANGA AT ALLAHABAD (RASOOLABAD)', 25.494142, 81.858463], ['GANGA U/S, VINDHYACHAL, MIRZAPUR', 25.1489766, 82.54936459999999], ['GANGA AT TRIGHAT (GHAZIPUR)', 25.5714594, 83.602277]];
+                        
+    // Info window content
+    var infoWindowContent_unsafe = [
+        ['<div class="info_content">' +'<h2>GANGA AT GARHMUKTESHWAR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.38 <b>EC:</b> 219.75 <b>BOD:</b> 3.37 <b>DO:</b> 8.58</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA U/S, ANOOPSHAHAR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.33 <b>EC:</b> 221.75 <b>BOD:</b> 3.12 <b>DO:</b> 9.22</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT NARORA (BULANDSAHAR)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.34 <b>EC:</b> 216.25 <b>BOD:</b> 2.65 <b>DO:</b> 9.34</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT BITHOOR (KANPUR)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.21 <b>EC:</b> 104.82 <b>BOD:</b> 4.13 <b>DO:</b> 8.71</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT DALMAU (RAI BAREILLY)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.87 <b>EC:</b> 240.42 <b>BOD:</b> 3.5 <b>DO:</b> 7.74</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT ALLAHABAD (RASOOLABAD)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.25 <b>EC:</b> 458.83 <b>BOD:</b> 5.58 <b>DO:</b> 7.42</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA U/S, VINDHYACHAL, MIRZAPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.89 <b>EC:</b> 455.69 <b>BOD:</b> 2.77 <b>DO:</b> 8.51</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GANGA AT TRIGHAT (GHAZIPUR)</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.46 <b>EC:</b> 288.25 <b>BOD:</b> 3.67 <b>DO:</b> 7.61</p>' + '</div>']
+    ];
+        
+    // Add multiple markers to map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+
+    var pinColor_safe = "006400";
+    var pinImage_safe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_safe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+
+    var pinColor_unsafe = "FE7569";
+    var pinImage_unsafe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_unsafe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+    
+    // Place each marker on the map  
+    for( i = 0; i < safe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(safe_markers[i][1], safe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_safe,
+            title: safe_markers[i][0]
+        });
+
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    for( i = 0; i < unsafe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(unsafe_markers[i][1], unsafe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_unsafe,
+            title: unsafe_markers[i][0]
+        });
+
+
+        
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_unsafe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    // Set zoom level
+    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+        this.setZoom(6);
+        google.maps.event.removeListener(boundsListener);
+    });
+    
+}
+// Load initialize function
+google.maps.event.addDomListener(window, 'load', initMap);
+</script>
+<div id="mapContainer">
+    <div id="mapCanvas"></div>
+</div>
+
+</body>
+</html>

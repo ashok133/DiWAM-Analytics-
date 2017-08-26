@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<title>Google Maps with Multiple Markers by CodexWorld</title>
+<style type="text/css">
+#mapContainer {
+    height: 650px;
+}
+
+#mapCanvas {
+    width: 100%;
+    height: 100%;
+}
+</style>
+
+</head>
+<body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWZ2IDESUpL3pF9dx73FO_vOy3JF7a2AY"></script>
+<script>
+function initMap() {
+    var map;
+    var bounds = new google.maps.LatLngBounds();
+    var mapOptions = {
+        mapTypeId: 'roadmap'
+    };
+                    
+    // Display a map on the web page
+    map = new google.maps.Map(document.getElementById("mapCanvas"), mapOptions);
+    map.setTilt(50);
+        
+    // Multiple markers location, latitude, and longitude
+    var safe_markers = [];
+
+    var unsafe_markers = [['GODAVARI RIVER NEAR SOMESHWAR TEMPLE.', 20.023084, 73.72859100000001], ['GODAVARI RIVER AT NANDUR- MADMESHWAR DAM.', 20.009017, 74.1322893], ['GODAVARI NEAR TAPOVAN.', 19.9998715, 73.8151175], ['GODAVARI AT PANCHAVATI AT RAMKUND', 20.005822, 73.7932993], ['GODAVARI AT NASIK D/S', 19.9936418, 73.7957527], ['GODAVARI AT NANDED', 19.184627600000002, 77.3000155], ['WAINGANGA AT ASHTI', 19.6674903, 79.7988547], ['KANHAN D/S OF NAGPUR', 21.232008, 79.237701], ['KRISHNA AT KRISHNA BRIDGE, KARAD', 17.2602936, 74.1756964], ['KRISHNA AT SANGLI', 16.8523973, 74.58147729999999], ['KRISHNA AT KURUNDWAD IN KOLHAPUR', 16.708589, 74.242142], ['KRISHNA AT KSHETRA MAHULI.', 17.6909313, 74.0579185], ['KRISHNA AT KRISHNA-VENNA SANGAM, MAHULI', 17.6918199, 74.05108359999998], ['KRISHNA RIVER AT WAI.', 17.9486823, 73.8918897], ['MAHIM CREEK AT MAHIM BAY', 19.0312098, 72.8249607], ['THANE CREEK AT KALWA ROAD BRIDGE, KALWA, THANE', 19.197002800000003, 72.98560259999999], ['VASHI CREEK AT VASHII BRIDGE.', 19.0624142, 72.97345759999999], ['SARAWALI CREEK, SARAWALI, PALGHAR, THANE', 19.978268300000003, 72.7777596], ['SAVTA CREEK, SAVTA, DAHANU, THANE', 19.965473, 72.77647879999999], ['DAHANU CREEK AT DAHANU FORT', 19.9727735, 72.72050290000001], ['SEA WATER AT GATEWAY OF INDIA.', 18.921984100000003, 72.8346543], ['SEA WATER AT CHARNI ROAD CHOUPATHY.', 18.9515801, 72.8187988], ['SEA WATER AT VERSOVA.', 19.050572600000002, 72.8271479], ['ARNALA SEA, ARNALA, VASAI, THANE', 19.453126, 72.751275], ['UTTAN SEA, UTTAN, BHAYANDER, THANE', 19.302184, 72.78729], ['SEA WATER AT NARIMAN POINT', 18.9335318, 72.8258781], ['SEA WATER AT MALABAR HILL, WALKESHWAR, MUMBAI', 18.945638199999998, 72.7932669], ['SEA WATER AT HAJI ALI, WORLI, MUMBAI', 18.982747, 72.8089648], ['SEA WATER AT SHIVAJI PARK, DADAR, MUMBAI', 19.0270694, 72.8381012], ['SEA WATER AT GANAPATHIPULE, RATNAGIRI.', 17.143573, 73.275042]];
+                        
+    // Info window content
+    var infoWindowContent_unsafe = [
+        ['<div class="info_content">' +'<h2>GODAVARI RIVER NEAR SOMESHWAR TEMPLE.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.58 <b>EC:</b> 285.23 <b>BOD:</b> 5.13 <b>DO:</b> 5.83</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI RIVER AT NANDUR- MADMESHWAR DAM.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.46 <b>EC:</b> 312.25 <b>BOD:</b> 5.5 <b>DO:</b> 5.66</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI NEAR TAPOVAN.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.49 <b>EC:</b> 425.9 <b>BOD:</b> 8.88 <b>DO:</b> 4.7</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT PANCHAVATI AT RAMKUND</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.43 <b>EC:</b> 407.3 <b>BOD:</b> 6.13 <b>DO:</b> 5.14</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT NASIK D/S</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.4 <b>EC:</b> 406.58 <b>BOD:</b> 6.46 <b>DO:</b> 5.31</p>' + '</div>'],
+['<div class="info_content">' +'<h2>GODAVARI AT NANDED</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.13 <b>EC:</b> 565.28 <b>BOD:</b> 4.26 <b>DO:</b> 6.36</p>' + '</div>'],
+['<div class="info_content">' +'<h2>WAINGANGA AT ASHTI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.14 <b>EC:</b> 728.17 <b>BOD:</b> 5.56 <b>DO:</b> 5.89</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KANHAN D/S OF NAGPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.1 <b>EC:</b> 696.67 <b>BOD:</b> 7.07 <b>DO:</b> 5.18</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KRISHNA BRIDGE, KARAD</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.74 <b>EC:</b> 205.38 <b>BOD:</b> 6.79 <b>DO:</b> 5.26</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT SANGLI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.81 <b>EC:</b> 773.86 <b>BOD:</b> 3.15 <b>DO:</b> 6.53</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KURUNDWAD IN KOLHAPUR</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.57 <b>EC:</b> 556.13 <b>BOD:</b> 3.58 <b>DO:</b> 6.57</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KSHETRA MAHULI.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.86 <b>EC:</b> 435.18 <b>BOD:</b> 7.27 <b>DO:</b> 4.87</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA AT KRISHNA-VENNA SANGAM, MAHULI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.97 <b>EC:</b> 407.81 <b>BOD:</b> 6.87 <b>DO:</b> 4.99</p>' + '</div>'],
+['<div class="info_content">' +'<h2>KRISHNA RIVER AT WAI.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.85 <b>EC:</b> 323.77 <b>BOD:</b> 8.05 <b>DO:</b> 4.53</p>' + '</div>'],
+['<div class="info_content">' +'<h2>MAHIM CREEK AT MAHIM BAY</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.48 <b>EC:</b> 40025.3 <b>BOD:</b> 12.12 <b>DO:</b> 4.5</p>' + '</div>'],
+['<div class="info_content">' +'<h2>THANE CREEK AT KALWA ROAD BRIDGE, KALWA, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.41 <b>EC:</b> 16482.9 <b>BOD:</b> 21.61 <b>DO:</b> 3.43</p>' + '</div>'],
+['<div class="info_content">' +'<h2>VASHI CREEK AT VASHII BRIDGE.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.42 <b>EC:</b> 37849.3 <b>BOD:</b> 9.18 <b>DO:</b> 5.13</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SARAWALI CREEK, SARAWALI, PALGHAR, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.88 <b>EC:</b> 10203.7 <b>BOD:</b> 8.68 <b>DO:</b> 4.88</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SAVTA CREEK, SAVTA, DAHANU, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.01 <b>EC:</b> 36781.8 <b>BOD:</b> 8.25 <b>DO:</b> 5.44</p>' + '</div>'],
+['<div class="info_content">' +'<h2>DAHANU CREEK AT DAHANU FORT</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 8.03 <b>EC:</b> 36643.8 <b>BOD:</b> 8.74 <b>DO:</b> 5.5</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT GATEWAY OF INDIA.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.69 <b>EC:</b> 52860.0 <b>BOD:</b> 10.72 <b>DO:</b> 4.61</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT CHARNI ROAD CHOUPATHY.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.66 <b>EC:</b> 51690.0 <b>BOD:</b> 10.68 <b>DO:</b> 4.72</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT VERSOVA.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.79 <b>EC:</b> 50604.9 <b>BOD:</b> 11.64 <b>DO:</b> 4.41</p>' + '</div>'],
+['<div class="info_content">' +'<h2>ARNALA SEA, ARNALA, VASAI, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.94 <b>EC:</b> 46329.5 <b>BOD:</b> 9.5 <b>DO:</b> 5.18</p>' + '</div>'],
+['<div class="info_content">' +'<h2>UTTAN SEA, UTTAN, BHAYANDER, THANE</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.98 <b>EC:</b> 46166.4 <b>BOD:</b> 10.11 <b>DO:</b> 5.52</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT NARIMAN POINT</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.6 <b>EC:</b> 54593.6 <b>BOD:</b> 10.87 <b>DO:</b> 4.78</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT MALABAR HILL, WALKESHWAR, MUMBAI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.67 <b>EC:</b> 52354.5 <b>BOD:</b> 10.55 <b>DO:</b> 4.55</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT HAJI ALI, WORLI, MUMBAI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.75 <b>EC:</b> 54210.0 <b>BOD:</b> 9.63 <b>DO:</b> 4.56</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT SHIVAJI PARK, DADAR, MUMBAI</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.72 <b>EC:</b> 54160.0 <b>BOD:</b> 10.55 <b>DO:</b> 4.78</p>' + '</div>'],
+['<div class="info_content">' +'<h2>SEA WATER AT GANAPATHIPULE, RATNAGIRI.</h2><h3>Unsafe</h3>' + '<p><b>ph:</b> 7.95 <b>EC:</b> 31535.5 <b>BOD:</b> 4.05 <b>DO:</b> 6.25</p>' + '</div>']
+    ];
+        
+    // Add multiple markers to map
+    var infoWindow = new google.maps.InfoWindow(), marker, i;
+
+    var pinColor_safe = "006400";
+    var pinImage_safe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_safe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+
+    var pinColor_unsafe = "FE7569";
+    var pinImage_unsafe = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor_unsafe,
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0,0),
+        new google.maps.Point(10, 34));
+    
+    // Place each marker on the map  
+    for( i = 0; i < safe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(safe_markers[i][1], safe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_safe,
+            title: safe_markers[i][0]
+        });
+
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    for( i = 0; i < unsafe_markers.length; i++ ) {
+        var position = new google.maps.LatLng(unsafe_markers[i][1], unsafe_markers[i][2]);
+        bounds.extend(position);
+        marker = new google.maps.Marker({
+            position: position,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            icon: pinImage_unsafe,
+            title: unsafe_markers[i][0]
+        });
+
+
+        
+        // Add info window to marker    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infoWindow.setContent(infoWindowContent_unsafe[i][0]);
+                infoWindow.open(map, marker);
+            }
+        })(marker, i));
+
+        // Center the map to fit all markers on the screen
+        map.fitBounds(bounds);
+    }
+
+    // Set zoom level
+    var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+        this.setZoom(14);
+        google.maps.event.removeListener(boundsListener);
+    });
+    
+}
+// Load initialize function
+google.maps.event.addDomListener(window, 'load', initMap);
+</script>
+<div id="mapContainer">
+    <div id="mapCanvas"></div>
+</div>
+
+</body>
+</html>
